@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Products from "../models/product.model.js";
 
 export const DBConnect = async () => {
   try {

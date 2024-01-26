@@ -1,9 +1,9 @@
-import { API_ERRORS, API_RESPONSE } from "../constants/constants.js";
-import ApiError from "../utils/ApiError.js";
-import asyncHandler from "../utils/asyncHandler.js";
 import { StatusCodes } from "http-status-codes";
+import { API_ERRORS, API_RESPONSE, INTEGERS } from "../constants/constants.js";
 import Products from "../models/product.model.js";
+import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 const createProductController = asyncHandler(async (req, res) => {
   const { title, price, description, category, image } = req.body;
@@ -30,4 +30,35 @@ const createProductController = asyncHandler(async (req, res) => {
     );
 });
 
-export { createProductController };
+const getProductsController = asyncHandler(async (req, res) => {
+  const pageNumber = parseInt(req.query.pageNumber) || INTEGERS.ONE;
+  const pageSize = parseInt(req.query.pageSize) || INTEGERS.TWENTY_FOUR;
+  const skip = pageNumber * pageSize - pageSize;
+  const search = req.query.search
+    ? {
+        title: { $regex: req.query.search, $options: "i" },
+      }
+    : {};
+
+  const products = await Products.find(search).skip(skip).limit(pageSize);
+
+  const count = await Products.countDocuments(search);
+
+  const hasNextPage = pageNumber * pageSize < count;
+
+  return res
+    .status(products.length > 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND)
+    .json(
+      new ApiResponse(
+        products.length > 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND,
+        products,
+        products.length > 0
+          ? API_RESPONSE.PRODUCTS_FOUND
+          : API_RESPONSE.PRODUCTS_NOT_FOUND,
+        count,
+        hasNextPage
+      )
+    );
+});
+
+export { createProductController, getProductsController };
