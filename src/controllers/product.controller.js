@@ -61,4 +61,29 @@ const getProductsController = asyncHandler(async (req, res) => {
     );
 });
 
-export { createProductController, getProductsController };
+const getProductByIdController = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+
+  if (!productId) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, API_ERRORS.PRODUCT_ID_REQ);
+  }
+
+  const product = await Products.findOne({ _id: productId });
+
+  if (!product) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      API_ERRORS.PRODUCT_NOT_AVAILABLE
+    );
+  }
+
+  return res
+    .status(StatusCodes.OK)
+    .json(new ApiResponse(StatusCodes.OK, product, API_RESPONSE.PRODUCT_FOUND));
+});
+
+export {
+  createProductController,
+  getProductsController,
+  getProductByIdController,
+};
