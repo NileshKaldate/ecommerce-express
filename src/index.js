@@ -1,6 +1,6 @@
 import express from "express";
 import { config } from "dotenv";
-import { DBConnect } from "./config/dataBase.config.js";
+import { DBConnect } from "./config/DBConnect.config.js";
 import ProductRoutes from "./routes/product.routes.js";
 import UserRoutes from "./routes/user.routes.js";
 import CartRoutes from "./routes/cart.routes.js";
