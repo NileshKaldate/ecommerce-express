@@ -33,10 +33,6 @@ app.use("*", () => {
 
 app.use(errorHandler);
 
-setInterval(() => {
-  console.log("server is running");
-}, 5000);
-
 DBConnect()
   .then(() => {
     app.listen(port, () => {
