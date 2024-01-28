@@ -8,6 +8,7 @@ import { errorHandler } from "./utils/errorHandler.js";
 import ApiError from "./utils/ApiError.js";
 import { StatusCodes } from "http-status-codes";
 import { API_ERRORS } from "./constants/constants.js";
+import cors from "cors";
 
 config();
 
@@ -18,6 +19,7 @@ app.use(express.json(), (err, req, res, next) => {
   if (err)
     throw new ApiError(StatusCodes.BAD_REQUEST, API_ERRORS.PROPER_JSON_DATA);
 });
+app.use(cors());
 
 app.head("/health", (req, res) => {
   return res.status(StatusCodes.OK).end();
