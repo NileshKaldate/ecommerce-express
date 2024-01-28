@@ -19,9 +19,10 @@ app.use(express.json(), (err, req, res, next) => {
     throw new ApiError(StatusCodes.BAD_REQUEST, API_ERRORS.PROPER_JSON_DATA);
 });
 
-app.get("/health-check", (req, res) => {
-  return res.send({ message: "Server is running" });
+app.head("/health", (req, res) => {
+  return res.status(StatusCodes.OK).end();
 });
+
 app.use(ProductRoutes);
 app.use(UserRoutes);
 app.use(CartRoutes);
