@@ -18,6 +18,10 @@ app.use(express.json(), (err, req, res, next) => {
   if (err)
     throw new ApiError(StatusCodes.BAD_REQUEST, API_ERRORS.PROPER_JSON_DATA);
 });
+
+app.get("/health-check", (req, res) => {
+  return res.send({ message: "Server is running" });
+});
 app.use(ProductRoutes);
 app.use(UserRoutes);
 app.use(CartRoutes);
@@ -27,6 +31,10 @@ app.use("*", () => {
 });
 
 app.use(errorHandler);
+
+setInterval(() => {
+  console.log("server is running");
+}, 5000);
 
 DBConnect()
   .then(() => {
