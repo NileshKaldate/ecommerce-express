@@ -6,6 +6,7 @@ import Cart from "../models/cart.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const addToCartController = asyncHandler(async (req, res) => {
+  console.log("go");
   const { productId, quantity } = req.body;
   const { user } = req;
 
@@ -113,12 +114,14 @@ const getAllCartProducts = asyncHandler(async (req, res) => {
   });
 
   return res
-    .status(cart.products.length !== 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND)
+    .status(
+      cart?.products.length !== 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND
+    )
     .json(
       new ApiResponse(
-        cart.products.length !== 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND,
-        cart.products,
-        cart.products.length !== 0
+        cart?.products.length !== 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND,
+        cart?.products || [],
+        cart?.products.length !== 0
           ? API_RESPONSE.PRODUCTS_FOUND
           : API_RESPONSE.CART_IS_EMPTY
       )
