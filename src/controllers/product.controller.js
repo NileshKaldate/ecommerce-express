@@ -34,15 +34,18 @@ const getProductsController = asyncHandler(async (req, res) => {
   const pageNumber = parseInt(req.query.pageNumber) || INTEGERS.ONE;
   const pageSize = parseInt(req.query.pageSize) || INTEGERS.TWENTY_FOUR;
   const skip = pageNumber * pageSize - pageSize;
+  const category = req.query.category ? { category: req.query.category } : {};
   const search = req.query.search
     ? {
         title: { $regex: req.query.search, $options: "i" },
       }
     : {};
 
-  const products = await Products.find(search).skip(skip).limit(pageSize);
+  const products = await Products.find({ ...search, ...category })
+    .skip(skip)
+    .limit(pageSize);
 
-  const count = await Products.countDocuments(search);
+  const count = await Products.countDocuments({ ...search, ...category });
 
   const hasNextPage = pageNumber * pageSize < count;
 
