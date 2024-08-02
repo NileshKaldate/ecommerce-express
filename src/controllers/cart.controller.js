@@ -76,7 +76,7 @@ const updateProductQuantityController = asyncHandler(async (req, res) => {
   const { user } = req;
   const { productId, quantity } = req.body;
 
-  if (!productId || !quantity) {
+  if (!productId) {
     throw new ApiError(StatusCodes.OK, API_ERRORS.ALL_FIELDS_REQUIRED);
   }
 
@@ -120,7 +120,7 @@ const getAllCartProducts = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         cart?.products.length !== 0 ? StatusCodes.OK : StatusCodes.NOT_FOUND,
-        cart?.products || [],
+        cart?.products.filter((item) => item.quantity !== 0) || [],
         cart?.products.length !== 0
           ? API_RESPONSE.PRODUCTS_FOUND
           : API_RESPONSE.CART_IS_EMPTY
